@@ -16,8 +16,8 @@ def draw_detections(img, rects, thickness = 1):
 
 def send_request(filename):
     tf = ["true", "false"]
-    r = requests.get('http://172.16.22.196:9000/api/users/demography/male/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf))
-    print 'http://172.16.22.196:9000/api/users/demography/male/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf)
+    r = requests.get('http://172.16.22.196:9000/api/users/demography/' + random.choice(["male", "female"]) + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf))
+    print 'http://172.16.22.196:9000/api/users/demography/' + random.choice(["male", "female"]) + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf)
     # http://localhost:9000/api/users/demography/:gender/:age
     print r
  
