@@ -14,10 +14,10 @@ def draw_detections(img, rects, thickness = 1):
         pad_w, pad_h = int(0.15*w), int(0.05*h)
         cv2.rectangle(img, (x+pad_w, y+pad_h), (x+w-pad_w, y+h-pad_h), (0, 255, 0), thickness)
 
-def send_request(filename, gender):
+def send_request(filename):
     tf = ["true", "false"]
-    r = requests.get('http://172.16.22.196:9000/api/users/demography/' + gender + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf))
-    print 'http://172.16.22.196:9000/api/users/demography/' + gender + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf)
+    r = requests.get('http://172.16.22.196:9000/api/users/demography/' + random.choice(["male", "female"]) + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf))
+    print 'http://172.16.22.196:9000/api/users/demography/' + random.choice(["male", "female"]) + '/' + random.choice(["child", "youth", "adult", "elderly"]) + '/' +filename+'/' + random.choice(tf) + '/' + random.choice(tf)
     # http://localhost:9000/api/users/demography/:gender/:age
     print r
  
@@ -31,9 +31,9 @@ if __name__ == '__main__':
             #ftw0 very slow
             #ftw slow and inaccurate
 
-    cap = cv2.VideoCapture('ftw2.mp4')                        #video record code
-    # facedata = "haarcascade_frontalface_default.xml" #face detect haar casscade training data
-    facedata = "haarcascade_upperbody.xml" 
+    cap = cv2.VideoCapture('ha.mp4')                        #video record code
+    facedata = "haarcascade_frontalface_default.xml" #face detect haar casscade training data
+    # facedata = "haarcascade_upperbody.xml" 
     cascade = cv2.CascadeClassifier(facedata)        #training the classififer
 
     ret, frame = cap.read()                          #read data from input stream
@@ -62,18 +62,23 @@ if __name__ == '__main__':
 
         ex = ey = eh = ew = 0
         #print "faces_len, face[0]_len", type(faces), type(faces[0])
+        img2 = img.copy()
         
         for f in faces:
         
             x, y, w, h = [ v for v in f ]
             
             cv2.rectangle(img, (x,y), (x+w,y+h), (255,255,255))
-            text_color = (255,255,255)
-            cv2.putText(img, "Gender: Male", (x+w,y+15), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color, thickness=2)
-            cv2.putText(img, "Age: 16-25", (x+w,y+30), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color, thickness=2)
-            cv2.putText(img, "Height: 6 feet", (x+w,y+45), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color, thickness=2)
- 
-            sub_face = img[y:y+h, x:x+w]
+            text_color_blue = (255,0,0)
+            text_color_yellow = (0,255,255)
+            # cv2.putText(img, "Gender: Male", (x+w,y+15), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color, thickness=2)
+            cv2.putText(img, "Age: ADULT", (x+w,y+30-15), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color_blue, thickness=2)
+            cv2.putText(img, "Height: 6 feet", (x+w,y+45-15), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color_blue, thickness=2)
+            cv2.putText(img, "X:"+str(x), (x+w,y+60), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color_yellow, thickness=2)
+            cv2.putText(img, "Y:"+str(y), (x+w,y+75), cv2.FONT_HERSHEY_PLAIN, 1.0, text_color_yellow, thickness=2)
+            
+
+            sub_face = img2[y-10:y+h+10, x-10:x+w+10]
             face_file_name = "faces/face_" + str(y) + ".jpg"
 
             # print cv2.imwrite("tatti.png", sub_face)
@@ -81,16 +86,11 @@ if __name__ == '__main__':
             
         
         print count
-        if count%8 == 0 and (count == 1*8 or count == 56 or count == 88):
-            if count == 1*8:
-                send_request(str((count/10)+1) + '.png', "male")
-            elif count == 56:
-                send_request(str((count/10)+1) + '.png', "male")
-            elif count == 88:
-                send_request(str((count/10)+1) + '.png', "female")
+        if (count == 94 or count == 136 or count == 350 or count == 205 or count == 231 or count == 278 or count == 301 or count == 330 or count == 420 or count == 498 or count == 505 or count == 592 or count == 643 or count == 678 or count == 709 or count == 850 ):
+            print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", count
             cv2.imshow("sb", sub_face)
             cv2.imwrite('/var/www/html/public/' + str((count/10)+1) + '.png', sub_face)
-            
+            send_request(str((count/10)+1) + '.png')
         cv2.imshow('img', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

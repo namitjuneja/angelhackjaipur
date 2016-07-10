@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
-    cap=cv2.VideoCapture('allah.mp4')
+    cap=cv2.VideoCapture('ftw0.mp4')
     # cap=cv2.VideoCapture(0)
 
     while True:
