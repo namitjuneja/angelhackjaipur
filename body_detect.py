@@ -30,14 +30,17 @@ def draw_detections(img, rects, thickness = 1):
 		0, img)
 
 
+
+
 if __name__ == '__main__':
 
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
     cap=cv2.VideoCapture('ftw0.mp4')
     # cap=cv2.VideoCapture(0)
-
+    count = 0
     while True:
+    	count += 1
         ret,frame=cap.read()
         found,w=hog.detectMultiScale(frame, winStride=(8,8), padding=(32,32), scale=1.05)
         draw_detections(frame,found)
@@ -45,10 +48,13 @@ if __name__ == '__main__':
 
 
         cv2.imshow('feed',frame)
+        cv2.imwrite("/var/www/html/public/stream" + str(count) + ".png", frame)
 
 
 
         ch = 0xFF & cv2.waitKey(1)
         if ch == 27:
             break
+
+
     cv2.destroyAllWindows()
